@@ -1,6 +1,18 @@
 # cppcheck-misra Extension
 
-A VS Code extension that runs cppcheck with strict MISRA checking on C/C++ files.
+**Unofficial Third-Party Integration | For Personal and Team Use Only**
+
+A VS Code extension that integrates with **your locally installed** cppcheck to provide strict MISRA checking on C/C++ files.
+
+> **Important Notice**: This is an **unofficial** third-party integration extension and is **not affiliated with or endorsed by** the Cppcheck project/developers.
+
+## Legal / Licensing
+
+- This extension is licensed under **Apache-2.0** (see [`LICENSE`](LICENSE)).
+- This extension **does not include, modify, or redistribute** cppcheck.
+- cppcheck is a separate open-source tool licensed under **GPLv3**. You must obtain/install cppcheck yourself and comply with its license when using it.
+
+See also: third-party notes in [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md).
 
 ## Compatibility / Environment
 
@@ -96,4 +108,6 @@ Initial release of cppcheck-misra extension:
 
 ---
 
-**Enjoy using cppcheck-misra!**
+**Enjoy using cppcheck-misra for personal and team development!**
+
+*Note: This extension is provided as-is for integration purposes. Commercial use may require additional licensing considerations.*

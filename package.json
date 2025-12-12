@@ -1,9 +1,10 @@
 {
   "name": "cppcheck-misra",
-  "displayName": "Cppcheck MISRA",
-  "description": "Run cppcheck (2.18.0) with strict MISRA C:2012 (C) and MISRA C++:2023 (C++) checking on C/C++ files",
+  "displayName": "Cppcheck MISRA (Third-Party)",
+  "description": "Unofficial third-party integration: run your locally installed cppcheck (2.18.0) with strict MISRA C / MISRA C++ checking on C/C++ files. Not affiliated with the Cppcheck project. For personal and team use only.",
   "version": "0.2.0",
   "publisher": "daibun",
+  "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.106.1"
   },

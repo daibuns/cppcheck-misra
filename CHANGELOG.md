@@ -14,12 +14,14 @@ Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how 
   - C++: `cppcheck-misra.cppReportType` (default: `misra-cpp-2023`)
 - Configurable platform selection: `cppcheck-misra.platform` (default: `unix32`)
 - Configurable performance and noise controls: `jobs`, `suppressMissingIncludeSystem`
+- Third-party notices file: [`THIRD_PARTY_NOTICES.md`](THIRD_PARTY_NOTICES.md)
 
 ### Changed
+- Extension branding updated to emphasize **Unofficial / Third-Party** status (to reduce confusion with the upstream Cppcheck project)
 - Default MISRA mapping is now fixed (no custom "auto"):
   - C => MISRA C:2012 (`misra-c-2012`)
   - C++ => MISRA C++:2023 (`misra-cpp-2023`)
-- Documentation updated for cppcheck 2.18.0 and updated settings
+- Documentation updated with clearer licensing notes (Apache-2.0 for this extension; cppcheck remains GPLv3)
 
 ## [0.1.0] - 2025-01-10
 
