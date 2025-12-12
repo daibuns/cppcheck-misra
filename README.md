@@ -1,6 +1,15 @@
 # cppcheck-misra Extension
 
-A VS Code extension that runs cppcheck with multi-MISRA standard compliance checking (MISRA C:2012, MISRA C:2023, MISRA C++:2008, MISRA C++:2023) on C/C++ files. Automatically detects file type and applies appropriate MISRA rules.
+A VS Code extension that runs cppcheck with strict MISRA checking on C/C++ files.
+
+## Compatibility / Environment
+
+- Cppcheck: **2.18.0** (this extension config/flags are based on `cppcheck --help` for 2.18.0)
+- VS Code: **^1.106.1** (see extension `engines.vscode`)
+
+Default standards and guidelines:
+- C files: `--std=c99`, `--report-type=misra-c-2012` (MISRA C:2012)
+- C++ files: `--std=c++17`, `--report-type=misra-cpp-2023` (MISRA C++:2023)
 
 ## Features
 
@@ -38,14 +47,12 @@ This extension contributes the following settings:
 
 * `cppcheck-misra.cppcheckPath`: Path to cppcheck executable (default: "cppcheck")
 * `cppcheck-misra.enableOnSave`: Enable/disable automatic checking on file save (default: true)
+* `cppcheck-misra.enable`: Cppcheck `--enable=<id>` (options: all, warning, style, performance, portability, information, unusedFunction, missingInclude; default: "all"). Note: `all` can increase noise/false positives unless you scan whole program.
 * `cppcheck-misra.cStd`: C language standard for C files (options: c89, c99, c11; default: "c99")
 * `cppcheck-misra.cppStd`: C++ language standard for C++ files (options: c++03, c++11, c++14, c++17, c++20; default: "c++17")
-* `cppcheck-misra.reportType`: MISRA report type (options: auto, misra-c-2012, misra-c-2023, misra-cpp-2008, misra-cpp-2023; default: "auto")
-  - **auto**: Automatically detect based on file type (C → MISRA C, C++ → MISRA C++)
-  - **misra-c-2012**: Force MISRA C:2012 rules
-  - **misra-c-2023**: Force MISRA C:2023 rules  
-  - **misra-cpp-2008**: Force MISRA C++:2008 rules
-  - **misra-cpp-2023**: Force MISRA C++:2023 rules
+* `cppcheck-misra.cReportType`: Cppcheck `--report-type` for C files (options: normal, autosar, cert-c-2016, misra-c-2012, misra-c-2023, misra-c-2025; default: "misra-c-2012")
+* `cppcheck-misra.cppReportType`: Cppcheck `--report-type` for C++ files (options: normal, autosar, cert-cpp-2016, misra-cpp-2008, misra-cpp-2023; default: "misra-cpp-2023")
+  - Cppcheck 2.18.0 `--report-type=<type>` adds guideline and classification fields. Available types: `normal`, `autosar`, `cert-c-2016`, `cert-cpp-2016`, `misra-c-2012`, `misra-c-2023`, `misra-c-2025`, `misra-cpp-2008`, `misra-cpp-2023`.
 * `cppcheck-misra.severityMapping.mandatory`: Diagnostic severity for MISRA Mandatory violations (options: error, warning, information, hint; default: "error")
 * `cppcheck-misra.severityMapping.required`: Diagnostic severity for MISRA Required violations (options: error, warning, information, hint; default: "warning")
 * `cppcheck-misra.severityMapping.advisory`: Diagnostic severity for MISRA Advisory violations (options: error, warning, information, hint; default: "information")

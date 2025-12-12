@@ -1,8 +1,8 @@
 {
   "name": "cppcheck-misra",
   "displayName": "Cppcheck MISRA",
-  "description": "Run cppcheck with MISRA C:2012, MISRA C:2023, MISRA C++:2008, and MISRA C++:2023 rules on C/C++ files",
-  "version": "0.1.0",
+  "description": "Run cppcheck (2.18.0) with strict MISRA C:2012 (C) and MISRA C++:2023 (C++) checking on C/C++ files",
+  "version": "0.2.0",
   "publisher": "daibun",
   "engines": {
     "vscode": "^1.106.1"
@@ -49,11 +49,79 @@
           "default": "c++17",
           "description": "C++ language standard passed to cppcheck via --std=<value> for C++ files."
         },
-        "cppcheck-misra.reportType": {
+        "cppcheck-misra.cReportType": {
           "type": "string",
-          "enum": ["auto", "misra-c-2012", "misra-c-2023", "misra-cpp-2008", "misra-cpp-2023"],
-          "default": "auto",
-          "description": "MISRA report type: auto (detect by file type), misra-c-2012, misra-c-2023, misra-cpp-2008, or misra-cpp-2023"
+          "enum": ["normal", "autosar", "cert-c-2016", "misra-c-2012", "misra-c-2023", "misra-c-2025"],
+          "default": "misra-c-2012",
+          "description": "Cppcheck --report-type for C files."
+        },
+        "cppcheck-misra.cppReportType": {
+          "type": "string",
+          "enum": ["normal", "autosar", "cert-cpp-2016", "misra-cpp-2008", "misra-cpp-2023"],
+          "default": "misra-cpp-2023",
+          "description": "Cppcheck --report-type for C++ files."
+        },
+
+        "cppcheck-misra.platform": {
+          "type": "string",
+          "enum": [
+            "unix32",
+            "unix64",
+            "win32A",
+            "win32W",
+            "win64",
+            "avr8",
+            "elbrus-e1cp",
+            "pic8",
+            "pic8-enhanced",
+            "pic16",
+            "mips32",
+            "native",
+            "unspecified"
+          ],
+          "default": "unix32",
+          "description": "Pass --platform=<type>."
+        },
+
+        "cppcheck-misra.enable": {
+          "type": "string",
+          "enum": ["all", "warning", "style", "performance", "portability", "information", "unusedFunction", "missingInclude"],
+          "default": "all",
+          "description": "Pass --enable=<id>. Note: --enable=all can increase noise/false positives unless you scan whole program."
+        },
+
+        "cppcheck-misra.checkLevel": {
+          "type": "string",
+          "enum": ["reduced", "normal", "exhaustive"],
+          "default": "exhaustive",
+          "description": "Cppcheck --check-level. Use exhaustive for stricter valueflow analysis (slower)."
+        },
+        "cppcheck-misra.force": {
+          "type": "boolean",
+          "default": true,
+          "description": "Pass --force to check more preprocessor configurations."
+        },
+        "cppcheck-misra.maxConfigs": {
+          "type": "number",
+          "default": 64,
+          "minimum": 1,
+          "description": "Pass --max-configs=<n>. Increase to avoid skipping files with many preprocessor configurations."
+        },
+        "cppcheck-misra.safety": {
+          "type": "boolean",
+          "default": true,
+          "description": "Pass --safety to enable safety-certified checking mode (stricter, may change exit codes)."
+        },
+        "cppcheck-misra.jobs": {
+          "type": "number",
+          "default": 4,
+          "minimum": 1,
+          "description": "Pass -j <n> to run cppcheck with multiple threads."
+        },
+        "cppcheck-misra.suppressMissingIncludeSystem": {
+          "type": "boolean",
+          "default": true,
+          "description": "Suppress missingIncludeSystem (system headers not found) via --suppress=missingIncludeSystem."
         },
 
         "cppcheck-misra.severityMapping.mandatory": {

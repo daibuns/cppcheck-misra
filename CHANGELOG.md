@@ -4,6 +4,23 @@ All notable changes to the "cppcheck-misra" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.2.0] - 2025-12-12
+
+### Added
+- Stricter cppcheck analysis options by default: `--enable` (default: `all`), `--inconclusive`, `--check-level=exhaustive`, `--force`, `--max-configs`, `--safety`
+- New configuration `cppcheck-misra.enable` to control `--enable=<id>` (default: `all`)
+- Per-language report type settings:
+  - C: `cppcheck-misra.cReportType` (default: `misra-c-2012`)
+  - C++: `cppcheck-misra.cppReportType` (default: `misra-cpp-2023`)
+- Configurable platform selection: `cppcheck-misra.platform` (default: `unix32`)
+- Configurable performance and noise controls: `jobs`, `suppressMissingIncludeSystem`
+
+### Changed
+- Default MISRA mapping is now fixed (no custom "auto"):
+  - C => MISRA C:2012 (`misra-c-2012`)
+  - C++ => MISRA C++:2023 (`misra-cpp-2023`)
+- Documentation updated for cppcheck 2.18.0 and updated settings
+
 ## [0.1.0] - 2025-01-10
 
 ### Added
