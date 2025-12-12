@@ -97,6 +97,8 @@ export function activate(context: vscode.ExtensionContext) {
             `--max-configs=${maxConfigs}`,
             `-j ${jobs}`,
             `--report-type=${reportType}`,
+            // 注意：cppcheck 的 --template 不一定支持 {reportType} 占位符（某些版本会原样输出）
+            // 因此这里不依赖 {reportType}，改为在扩展侧注入 reportType 标签
             '--template="{file}:{line}:{column}: warning: [{severity}][MISRA {id}] {message}"',
             `"${filePath}"`
         ];
@@ -132,7 +134,7 @@ export function activate(context: vscode.ExtensionContext) {
                     continue;
                 }
 
-                const [, file, lineStr, colStr, msg] = m;
+                const [, file, lineStr, colStr, msg0] = m;
 
                 // 只关心当前文件
                 if (path.resolve(file) !== path.resolve(filePath)) {
@@ -147,6 +149,14 @@ export function activate(context: vscode.ExtensionContext) {
                     new vscode.Position(lineNum, colNum + 1)
                 );
 
+                // 注入并展示当前 reportType（区分 Rules / Dir）
+                // 兼容两种输入：
+                //  1) 旧输出/当前模板: [severity][MISRA <id>] ...
+                //  2) 万一未来 cppcheck 支持: [severity][<reportType>][MISRA <id>] ...
+                let msg = msg0;
+                const rt = msg.match(/\[[^\]]*\]\[([^\]]+)\]\[MISRA\s+[^\]]+\]/)?.[1];
+                const usedReportType = rt || reportType;
+
                 // 根据 MISRA 行为级别决定 severity
                 let severity: vscode.DiagnosticSeverity = vscode.DiagnosticSeverity.Warning;
 
@@ -156,6 +166,11 @@ export function activate(context: vscode.ExtensionContext) {
                     severity = toSeverity(requiredLevel);
                 } else if (msg.includes('[Advisory]')) {
                     severity = toSeverity(advisoryLevel);
+                }
+
+                // 若消息里没有 reportType，则在 [MISRA ...] 前补一个 [<reportType>] 标签
+                if (!rt) {
+                    msg = msg.replace(/\]\[MISRA /, `][${usedReportType}][MISRA `);
                 }
 
                 const diag = new vscode.Diagnostic(range, msg, severity);

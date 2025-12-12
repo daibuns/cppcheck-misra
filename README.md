@@ -90,21 +90,7 @@ This extension contributes the following settings:
 
 ## Release Notes
 
-### 0.1.0
-
-Major update with enhanced MISRA support:
-- Added support for MISRA C:2023, MISRA C++:2008, and MISRA C++:2023 standards
-- Smart automatic language detection (C → MISRA C, C++ → MISRA C++)
-- Configurable C++ language standards (c++03 to c++20)
-- Flexible report type configuration with auto-detection mode
-
-### 0.0.1
-
-Initial release of cppcheck-misra extension:
-- Automatic MISRA C 2012 checking on file save
-- Manual execution via command palette
-- Configurable cppcheck path and auto-check behavior
-- Visual diagnostics with MISRA compliance level-based severity
+Release notes are maintained in [`CHANGELOG.md`](CHANGELOG.md).
 
 ---
 

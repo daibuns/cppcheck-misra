@@ -4,6 +4,11 @@ All notable changes to the "cppcheck-misra" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.2.1] - 2025-12-12
+
+### Added
+- Diagnostics output now includes the active `--report-type` (e.g. `misra-c-2012` / `misra-cpp-2023`) in each message, so you can distinguish Rules vs Dir output categories.
+
 ## [0.2.0] - 2025-12-12
 
 ### Added
