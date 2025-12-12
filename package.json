@@ -4,6 +4,10 @@
   "description": "Unofficial third-party integration: run your locally installed cppcheck (2.18.0) with strict MISRA C / MISRA C++ checking on C/C++ files. Not affiliated with the Cppcheck project. For personal and team use only.",
   "version": "0.2.0",
   "publisher": "daibun",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/daibuns/cppcheck-misra.git"
+  },
   "license": "Apache-2.0",
   "engines": {
     "vscode": "^1.106.1"
@@ -37,32 +41,53 @@
           "default": true,
           "description": "Run cppcheck MISRA automatically on file save"
         },
-
         "cppcheck-misra.cStd": {
           "type": "string",
-          "enum": ["c89", "c99", "c11"],
+          "enum": [
+            "c89",
+            "c99",
+            "c11"
+          ],
           "default": "c99",
           "description": "C language standard passed to cppcheck via --std=<value> for C files."
         },
         "cppcheck-misra.cppStd": {
           "type": "string",
-          "enum": ["c++03", "c++11", "c++14", "c++17", "c++20"],
+          "enum": [
+            "c++03",
+            "c++11",
+            "c++14",
+            "c++17",
+            "c++20"
+          ],
           "default": "c++17",
           "description": "C++ language standard passed to cppcheck via --std=<value> for C++ files."
         },
         "cppcheck-misra.cReportType": {
           "type": "string",
-          "enum": ["normal", "autosar", "cert-c-2016", "misra-c-2012", "misra-c-2023", "misra-c-2025"],
+          "enum": [
+            "normal",
+            "autosar",
+            "cert-c-2016",
+            "misra-c-2012",
+            "misra-c-2023",
+            "misra-c-2025"
+          ],
           "default": "misra-c-2012",
           "description": "Cppcheck --report-type for C files."
         },
         "cppcheck-misra.cppReportType": {
           "type": "string",
-          "enum": ["normal", "autosar", "cert-cpp-2016", "misra-cpp-2008", "misra-cpp-2023"],
+          "enum": [
+            "normal",
+            "autosar",
+            "cert-cpp-2016",
+            "misra-cpp-2008",
+            "misra-cpp-2023"
+          ],
           "default": "misra-cpp-2023",
           "description": "Cppcheck --report-type for C++ files."
         },
-
         "cppcheck-misra.platform": {
           "type": "string",
           "enum": [
@@ -83,17 +108,28 @@
           "default": "unix32",
           "description": "Pass --platform=<type>."
         },
-
         "cppcheck-misra.enable": {
           "type": "string",
-          "enum": ["all", "warning", "style", "performance", "portability", "information", "unusedFunction", "missingInclude"],
+          "enum": [
+            "all",
+            "warning",
+            "style",
+            "performance",
+            "portability",
+            "information",
+            "unusedFunction",
+            "missingInclude"
+          ],
           "default": "all",
           "description": "Pass --enable=<id>. Note: --enable=all can increase noise/false positives unless you scan whole program."
         },
-
         "cppcheck-misra.checkLevel": {
           "type": "string",
-          "enum": ["reduced", "normal", "exhaustive"],
+          "enum": [
+            "reduced",
+            "normal",
+            "exhaustive"
+          ],
           "default": "exhaustive",
           "description": "Cppcheck --check-level. Use exhaustive for stricter valueflow analysis (slower)."
         },
@@ -124,22 +160,36 @@
           "default": true,
           "description": "Suppress missingIncludeSystem (system headers not found) via --suppress=missingIncludeSystem."
         },
-
         "cppcheck-misra.severityMapping.mandatory": {
           "type": "string",
-          "enum": ["error", "warning", "information", "hint"],
+          "enum": [
+            "error",
+            "warning",
+            "information",
+            "hint"
+          ],
           "default": "error",
           "description": "Diagnostic severity for MISRA Mandatory violations"
         },
         "cppcheck-misra.severityMapping.required": {
           "type": "string",
-          "enum": ["error", "warning", "information", "hint"],
+          "enum": [
+            "error",
+            "warning",
+            "information",
+            "hint"
+          ],
           "default": "warning",
           "description": "Diagnostic severity for MISRA Required violations"
         },
         "cppcheck-misra.severityMapping.advisory": {
           "type": "string",
-          "enum": ["error", "warning", "information", "hint"],
+          "enum": [
+            "error",
+            "warning",
+            "information",
+            "hint"
+          ],
           "default": "information",
           "description": "Diagnostic severity for MISRA Advisory violations"
         }
@@ -155,13 +205,14 @@
     "test": "vscode-test"
   },
   "devDependencies": {
-    "@types/vscode": "^1.106.1",
     "@types/mocha": "^10.0.10",
     "@types/node": "22.x",
-    "typescript-eslint": "^8.46.3",
+    "@types/vscode": "^1.106.1",
+    "@vscode/test-cli": "^0.0.12",
+    "@vscode/test-electron": "^2.5.2",
+    "@vscode/vsce": "^3.7.1",
     "eslint": "^9.39.1",
     "typescript": "^5.9.3",
-    "@vscode/test-cli": "^0.0.12",
-    "@vscode/test-electron": "^2.5.2"
+    "typescript-eslint": "^8.46.3"
   }
 }
