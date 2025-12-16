@@ -4,6 +4,11 @@ All notable changes to the "cppcheck-misra" extension will be documented in this
 
 Check [Keep a Changelog](http://keepachangelog.com/) for recommendations on how to structure this file.
 
+## [0.2.2] - 2025-12-16
+
+### Changed
+- Optimized extension icon file size to reduce loading time and resource usage
+
 ## [0.2.1] - 2025-12-12
 
 ### Added

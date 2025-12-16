@@ -88,6 +88,42 @@ This extension contributes the following settings:
 - File must be saved to disk before checking (unsaved changes are not analyzed)
 - Currently only supports single file analysis
 
+## Release / Packaging
+
+### Local packaging (.vsix)
+
+This repo uses [`@vscode/vsce`](package.json) to package the extension.
+
+- Build + package:
+  - `npm ci`
+  - `npm run package`
+
+The `.vsix` file is generated to `dist/` (see [`package.json`](package.json) script `package`).
+
+### Automated GitHub Release
+
+This repository includes GitHub Actions workflows:
+
+- CI workflow: [`ci.yml`](.github/workflows/ci.yml)
+  - Runs `lint` + `compile` + `package`
+  - Runs `npm test` in **non-blocking** mode (allowed to fail) to reduce CI flakiness
+- Release workflow: [`release.yml`](.github/workflows/release.yml)
+  - Trigger: push a tag matching `v*.*.*` (example: `v0.2.1`)
+  - Verifies the tag version matches [`package.json`](package.json) `version`
+  - Builds and packages a `.vsix`
+  - Creates a GitHub Release and uploads the `.vsix` as an asset
+  - Release notes are extracted from [`CHANGELOG.md`](CHANGELOG.md) for the matching version section
+
+### Versioning and changelog
+
+- Version is stored in [`package.json`](package.json).
+- Release notes are maintained in [`CHANGELOG.md`](CHANGELOG.md) using a Keep a Changelog-style format.
+- To publish a new GitHub Release:
+  1. Update [`package.json`](package.json) `version`
+  2. Add a matching `## [x.y.z] - YYYY-MM-DD` section in [`CHANGELOG.md`](CHANGELOG.md)
+  3. Create and push a tag: `vX.Y.Z`
+     - Example: `git tag v0.2.2 && git push origin v0.2.2`
+
 ## Release Notes
 
 Release notes are maintained in [`CHANGELOG.md`](CHANGELOG.md).

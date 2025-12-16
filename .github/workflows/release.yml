@@ -1,0 +1,154 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  build_and_package:
+    name: Build & Package VSIX
+    runs-on: ubuntu-latest
+
+    outputs:
+      version: ${{ steps.meta.outputs.version }}
+      vsix_path: ${{ steps.meta.outputs.vsix_path }}
+      release_body_path: ${{ steps.notes.outputs.release_body_path }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Compile
+        run: npm run compile
+
+      - name: Compute release metadata
+        id: meta
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          TAG="${GITHUB_REF_NAME}"          # e.g. v0.2.1
+          VERSION="${TAG#v}"                # 0.2.1
+
+          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
+
+          mkdir -p dist
+          VSIX_PATH="dist/cppcheck-misra-${TAG}.vsix"
+          echo "vsix_path=$VSIX_PATH" >> "$GITHUB_OUTPUT"
+
+      - name: Verify tag matches package.json version
+        shell: bash
+        run: |
+          set -euo pipefail
+          TAG_VERSION="${GITHUB_REF_NAME#v}"
+
+          PKG_VERSION="$(node -p "require('./package.json').version")"
+
+          echo "Tag version:     $TAG_VERSION"
+          echo "package.json:    $PKG_VERSION"
+
+          if [ "$TAG_VERSION" != "$PKG_VERSION" ]; then
+            echo "ERROR: tag ($TAG_VERSION) does not match package.json version ($PKG_VERSION)"
+            exit 1
+          fi
+
+      - name: Package (.vsix)
+        shell: bash
+        run: |
+          set -euo pipefail
+          npm run package -- --out "${{ steps.meta.outputs.vsix_path }}"
+          ls -la dist
+
+      - name: Extract release notes from CHANGELOG.md
+        id: notes
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          VERSION="${{ steps.meta.outputs.version }}"
+          IN="CHANGELOG.md"
+          OUT="dist/RELEASE_NOTES.md"
+
+          if [ ! -f "$IN" ]; then
+            echo "ERROR: $IN not found"
+            exit 1
+          fi
+
+          # Extract section:
+          #   ## [<version>] - <date>
+          # until the next "## [" header (excluded).
+          awk -v ver="$VERSION" '
+            BEGIN { in=0; }
+            $0 ~ "^## \\[" ver "\\]" { in=1; print; next }
+            $0 ~ "^## \\[" && in==1 { exit }
+            in==1 { print }
+          ' "$IN" > "$OUT"
+
+          if [ ! -s "$OUT" ]; then
+            echo "ERROR: Could not find changelog section for version $VERSION"
+            exit 1
+          fi
+
+          echo "release_body_path=$OUT" >> "$GITHUB_OUTPUT"
+          echo "----- Extracted release notes -----"
+          cat "$OUT"
+
+      - name: Upload VSIX artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vsix-${{ github.ref_name }}
+          path: ${{ steps.meta.outputs.vsix_path }}
+          if-no-files-found: error
+
+      - name: Upload release notes artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-notes-${{ github.ref_name }}
+          path: ${{ steps.notes.outputs.release_body_path }}
+          if-no-files-found: error
+
+  github_release:
+    name: Create GitHub Release
+    needs: build_and_package
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Download VSIX artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: vsix-${{ github.ref_name }}
+          path: dist
+
+      - name: Download release notes artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: release-notes-${{ github.ref_name }}
+          path: dist
+
+      - name: Create GitHub Release and upload VSIX
+        uses: softprops/action-gh-release@v2
+        with:
+          name: ${{ github.ref_name }}
+          tag_name: ${{ github.ref_name }}
+          body_path: dist/RELEASE_NOTES.md
+          files: |
+            dist/*.vsix

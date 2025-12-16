@@ -2,7 +2,7 @@
   "name": "cppcheck-misra",
   "displayName": "Cppcheck MISRA (Third-Party)",
   "description": "Unofficial third-party integration: run your locally installed cppcheck (2.18.0) with strict MISRA C / MISRA C++ checking on C/C++ files. Not affiliated with the Cppcheck project. For personal and team use only.",
-  "version": "0.2.1",
+  "version": "0.2.2",
   "icon": "images/icon.png",
   "publisher": "daibun",
   "repository": {
@@ -199,8 +199,10 @@
   },
   "scripts": {
     "vscode:prepublish": "npm run compile",
+    "clean": "node -e \"require('fs').rmSync('out',{recursive:true,force:true}); require('fs').rmSync('dist',{recursive:true,force:true});\"",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
+    "package": "npm run compile && node -e \"const fs=require('fs'); const cp=require('child_process'); const pkg=require('./package.json'); fs.mkdirSync('dist',{recursive:true}); const out='dist/cppcheck-misra-v'+pkg.version+'.vsix'; console.log('Packaging ->', out); const r=cp.spawnSync('npx',['vsce','package','--out',out],{stdio:'inherit',shell:true}); process.exit(r.status??1);\"",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test"

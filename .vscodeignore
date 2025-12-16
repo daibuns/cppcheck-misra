@@ -9,3 +9,10 @@ vsc-extension-quickstart.md
 **/*.map
 **/*.ts
 **/.vscode-test.*
+
+# Repo-internal files not needed in the published extension
+.github/**
+.comate/**
+dist/**
+test.c
+test.cpp
