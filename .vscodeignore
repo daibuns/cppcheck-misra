@@ -1,18 +1,27 @@
+# Development and build files
 .vscode/**
 .vscode-test/**
 src/**
 .gitignore
 .yarnrc
-vsc-extension-quickstart.md
 **/tsconfig.json
 **/eslint.config.mjs
 **/*.map
 **/*.ts
 **/.vscode-test.*
+package-lock.json
+eslint.config.mjs
+tsconfig.json
+vsc-extension-quickstart.md
 
-# Repo-internal files not needed in the published extension
+# Documentation and internal files
 .github/**
 .comate/**
 dist/**
 test.c
 test.cpp
+cppcheck-help.txt
+cppcheck-misra-*.vsix
+
+# Source files and development artifacts
+out/test/**

@@ -202,7 +202,7 @@
     "clean": "node -e \"require('fs').rmSync('out',{recursive:true,force:true}); require('fs').rmSync('dist',{recursive:true,force:true});\"",
     "compile": "tsc -p ./",
     "watch": "tsc -watch -p ./",
-    "package": "npm run compile && node -e \"const fs=require('fs'); const cp=require('child_process'); const pkg=require('./package.json'); fs.mkdirSync('dist',{recursive:true}); const out='dist/cppcheck-misra-v'+pkg.version+'.vsix'; console.log('Packaging ->', out); const r=cp.spawnSync('npx',['vsce','package','--out',out],{stdio:'inherit',shell:true}); process.exit(r.status??1);\"",
+    "package": "npm run compile && node -e \"const fs=require('fs'); const cp=require('child_process'); const pkg=require('./package.json'); fs.mkdirSync('dist',{recursive:true}); const out='dist/cppcheck-misra-v'+pkg.version+'.vsix'; console.log('Packaging ->', out); const r=cp.spawnSync('npx', ['vsce', 'package', '--out', out], {stdio: 'inherit', shell: true}); process.exit(r.status ?? 1);\"",
     "pretest": "npm run compile && npm run lint",
     "lint": "eslint src",
     "test": "vscode-test"
