@@ -75,8 +75,21 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          npm run package -- --out "${{ steps.meta.outputs.vsix_path }}"
+          npm run package
           ls -la dist
+
+      - name: Compute VSIX hash
+        shell: bash
+        run: |
+          set -euo pipefail
+          
+          # Compute SHA256 hash of the VSIX file
+          VSIX_PATH="${{ steps.meta.outputs.vsix_path }}"
+          HASH_PATH="${VSIX_PATH}.sha256"
+          
+          sha256sum "$VSIX_PATH" | awk '{print $1}' > "$HASH_PATH"
+          echo "VSIX SHA256 hash: $(cat $HASH_PATH)"
+          echo "Hash saved to: $HASH_PATH"
 
       - name: Extract release notes from CHANGELOG.md
         id: notes
@@ -97,10 +110,10 @@ jobs:
           #   ## [<version>] - <date>
           # until the next "## [" header (excluded).
           awk -v ver="$VERSION" '
-            BEGIN { in=0; }
-            $0 ~ "^## \\[" ver "\\]" { in=1; print; next }
-            $0 ~ "^## \\[" && in==1 { exit }
-            in==1 { print }
+            BEGIN { in_block=0; }
+            $0 ~ "^## \\[" ver "\\]" { in_block=1; print; next }
+            $0 ~ "^## \\[" && in_block==1 { exit }
+            in_block==1 { print }
           ' "$IN" > "$OUT"
 
           if [ ! -s "$OUT" ]; then
@@ -118,6 +131,15 @@ jobs:
           name: vsix-${{ github.ref_name }}
           path: ${{ steps.meta.outputs.vsix_path }}
           if-no-files-found: error
+          retention-days: 7
+
+      - name: Upload VSIX hash artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vsix-hash-${{ github.ref_name }}
+          path: ${{ steps.meta.outputs.vsix_path }}.sha256
+          if-no-files-found: error
+          retention-days: 7
 
       - name: Upload release notes artifact
         uses: actions/upload-artifact@v4
@@ -125,6 +147,7 @@ jobs:
           name: release-notes-${{ github.ref_name }}
           path: ${{ steps.notes.outputs.release_body_path }}
           if-no-files-found: error
+          retention-days: 7
 
   github_release:
     name: Create GitHub Release
@@ -144,11 +167,18 @@ jobs:
           name: release-notes-${{ github.ref_name }}
           path: dist
 
-      - name: Create GitHub Release and upload VSIX
+      - name: Download VSIX hash artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: vsix-hash-${{ github.ref_name }}
+          path: dist
+
+      - name: Create GitHub Release and upload VSIX with hash
         uses: softprops/action-gh-release@v2
         with:
           name: ${{ github.ref_name }}
           tag_name: ${{ github.ref_name }}
           body_path: dist/RELEASE_NOTES.md
           files: |
-            dist/*.vsix
+            ${{ steps.meta.outputs.vsix_path }}
+            ${{ steps.meta.outputs.vsix_path }}.sha256
