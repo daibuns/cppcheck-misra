@@ -87,9 +87,21 @@ jobs:
           VSIX_PATH="${{ steps.meta.outputs.vsix_path }}"
           HASH_PATH="${VSIX_PATH}.sha256"
           
+          echo "Computing hash for: $VSIX_PATH"
+          ls -la "$(dirname "$VSIX_PATH")" || true
+          
+          # 确保文件存在
+          if [ ! -f "$VSIX_PATH" ]; then
+            echo "ERROR: VSIX file not found at $VSIX_PATH"
+            exit 1
+          fi
+          
+          # 计算哈希值并保存
           sha256sum "$VSIX_PATH" | awk '{print $1}' > "$HASH_PATH"
           echo "VSIX SHA256 hash: $(cat $HASH_PATH)"
           echo "Hash saved to: $HASH_PATH"
+          echo "Hash file content:"
+          cat "$HASH_PATH"
 
       - name: Extract release notes from CHANGELOG.md
         id: notes
@@ -180,5 +192,5 @@ jobs:
           tag_name: ${{ github.ref_name }}
           body_path: dist/RELEASE_NOTES.md
           files: |
-            ${{ steps.meta.outputs.vsix_path }}
-            ${{ steps.meta.outputs.vsix_path }}.sha256
+            dist/cppcheck-misra-${{ github.ref_name }}.vsix
+            dist/cppcheck-misra-${{ github.ref_name }}.vsix.sha256
